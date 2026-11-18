@@ -6,28 +6,27 @@ const express = require('express');
 // const passport = require('passport');
 // const bcrypt = require('bcrypt');
 // const { body, validationResult } = require('express-validator');
-// const pool = require('./db');
 // const initializePassport = require('./passport-config');
+
+const loginRoute = require('./routes/loginRoute')
+const registerRoute = require('./routes/registerRoute')
+
 
 const app = express();
 // initializePassport(passport);
 
 // View engine and middleware
 app.set('view engine', 'ejs');
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res, next)=>{
       res.render('index', { user: 'req.user' });
 })
 
-app.get('/login', (req, res, next)=>{
-    res.render('login')
-})
+app.use('/login',loginRoute)
+app.use('/register', registerRoute)
 
 
-app.get('/register', (req, res, next)=>{
-    res.render('register')
-})
 app.listen(process.env.PORT, (err)=>{
     if(err){
         throw Error(err)

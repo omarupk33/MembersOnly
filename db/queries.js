@@ -12,12 +12,13 @@ async function registerUser(fullname, email, password, membership_status) {
 }
 
 
-const findUser = async(username)=>{
-    const getUser = await pool.query(`SELECT * FROM users
-        WHERE id = $1;`, [username])
-        console.log(getUser)
-        return getUser.rows
+const findUserByEmail = async(email)=>{
+    const getUser = await pool.query(`SELECT * FROM members
+        WHERE email = $1 LIMIT 1;`, [email])
+
+
+        return getUser.rows[0]
 }
 
 
-module.exports = {registerUser, findUser}
+module.exports = {registerUser, findUserByEmail}

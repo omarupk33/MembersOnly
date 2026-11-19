@@ -1,4 +1,4 @@
-const {findUser} = require('../db/queries');
+const {findUserByEmail} = require('../db/queries');
 const { body, validationResult } = require('express-validator');
 
 
@@ -22,8 +22,22 @@ async function loginControllerGet(req, res, next){
 
 
 async function loginControllerPost(req, res, next){
-    redirect('/')
+
+
+
+  const {password, email} = req.body
+
+  const member = await findUserByEmail(email)
+
+  if(member.email === email && 
+     member.password === Number(password)){
+        res.send('Login Succeed')
+  }
+
+  else{ res.send('Login Failed')}
+
 }
 
 
-module.exports = {loginControllerGet,loginControllerPost, validateLogin}
+module.exports = {loginControllerGet,loginControllerPost,
+   validateLogin}

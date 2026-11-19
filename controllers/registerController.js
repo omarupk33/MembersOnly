@@ -20,7 +20,8 @@ const validateRegister = [
       .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long.')
       // .equals(req.body.confirmpw).withMessage('There is a mismatch in the password.')
       ,
-      body('membership').isBoolean()
+      // Alaways going to send invalid values
+      body('isMember').isBoolean()
   ]
 
 
@@ -31,6 +32,11 @@ async function registerControllerGet(req, res, next){
 
 
 async function registerControllerPost(req, res, next){
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({ errors: errors.array() })
+    }
+
 
     const {username, email, password, isMember} = req.body
     

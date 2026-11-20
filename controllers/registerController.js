@@ -21,7 +21,7 @@ const validateRegister = [
       // .equals(req.body.confirmpw).withMessage('There is a mismatch in the password.')
       ,
       // Alaways going to send invalid values
-      body('isMember').isBoolean()
+      body('isMember').optional().toBoolean().isBoolean()
   ]
 
 
@@ -41,7 +41,7 @@ async function registerControllerPost(req, res, next){
     const {username, email, password, isMember} = req.body
     
 
-    registerUser(username, email, password, isMember)
+    registerUser(username, email, password, isMember || false)
     
     res.redirect('/')
 }

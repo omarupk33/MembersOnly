@@ -21,4 +21,20 @@ const findUserByEmail = async(email)=>{
 }
 
 
-module.exports = {registerUser, findUserByEmail}
+async function addPost(fullname,newPost) {
+  const { rows } = await pool.query(`INSERT INTO posts 
+    (poster, content) 
+    VALUES
+    ($1, $2);
+`,[fullname, newPost]);
+  return rows;
+}
+
+
+async function allPosts() {
+  const { rows } = await pool.query(`SELECT * FROM posts;`);
+  return rows;
+}
+
+
+module.exports = {registerUser, findUserByEmail, addPost, allPosts}

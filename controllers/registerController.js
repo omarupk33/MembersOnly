@@ -5,11 +5,14 @@ const { body, validationResult } = require('express-validator');
 // Work on this and change things here and there
 const validateRegister = [
     // Username: remove spaces, ensure it's not empty and at least 3 chars
-    body('username')
+    body('firstname')
       .trim()
       .notEmpty().withMessage('Username is required.')
       .isLength({ min: 3 }).withMessage('Username must be at least 3 characters long.'),
-
+    body('lasttname')
+      .trim()
+      .notEmpty().withMessage('Username is required.')
+      .isLength({ min: 3 }).withMessage('Username must be at least 3 characters long.'),
     // Email: verify format and normalize (e.g., lowercase)
     body('email')
       .isEmail().withMessage('Please enter a valid email address.')
@@ -38,10 +41,12 @@ async function registerControllerPost(req, res, next){
     }
 
 
-    const {username, email, password, isMember} = req.body
+    const {firstname, lastname, email, password, isMember} = req.body
     
-
-    registerUser(username, email, password, isMember || false)
+    const fullname = firstname + ''+ lastname
+    const member_status = isMember || false
+    
+    registerUser(fullname, email, password, member_status )
     
     res.redirect('/')
 }

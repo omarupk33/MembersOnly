@@ -6,7 +6,7 @@ const { body, validationResult } = require('express-validator');
 
 
 router.get('/',(req, res, next)=>{
-    res.render('/post')
+    res.render('post')
 })
 
 

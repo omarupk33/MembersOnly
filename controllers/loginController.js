@@ -5,13 +5,13 @@ const { body, validationResult } = require('express-validator');
 
 const validateLogin = [
     // Email: verify format and normalize (e.g., lowercase)
-    body('email')
+    body('email').trim
       .isEmail().withMessage('Please enter a valid email address.')
       .normalizeEmail(),
 
     // Password: check minimum length
     body('password')
-      .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long.')
+      .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long.').escape()
   ]
 
 

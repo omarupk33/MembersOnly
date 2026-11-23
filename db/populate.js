@@ -3,7 +3,8 @@ const {Client} = require('pg')
 
 const sql = `CREATE TABLE IF NOT EXISTS members 
 (id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  fullname TEXT, email TEXT , password INTEGER, membership_status BOOLEAN)`
+firstname TEXT, lastname TEXT, email TEXT, 
+password TEXT, membership_status BOOLEAN)`
 
 
 async function main(){

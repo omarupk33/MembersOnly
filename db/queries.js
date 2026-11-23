@@ -2,12 +2,12 @@ const pool = require('./pool')
 
 
 // err here
-async function registerUser(fullname, email, password, membership_status) {
+async function registerUser(firstname, lastname, email, password, membership_status) {
   const { rows } = await pool.query(`INSERT INTO members 
-    (fullname, email, password, membership_status) 
+    (firstname, lastname, email, password, membership_status) 
     VALUES
-    ($1, $2, $3, $4);
-`,[fullname, email, password, membership_status]);
+    ($1, $2, $3, $4, $5);
+`,[firstname, lastname, email, password, membership_status]);
   return rows;
 }
 
@@ -21,12 +21,12 @@ const findUserByEmail = async(email)=>{
 }
 
 
-async function addPost(fullname,newPost) {
+async function addPost(firstname,newPost) {
   const { rows } = await pool.query(`INSERT INTO posts 
     (poster, content) 
     VALUES
     ($1, $2);
-`,[fullname, newPost]);
+`,[firstname, newPost]);
   return rows;
 }
 

@@ -1,4 +1,5 @@
-const {registerUser} = require('../db/queries');
+const bcrypt = require("bcryptjs");
+const {registerUser, findMemberByEmail} = require('../db/queries');
 const { body, validationResult } = require('express-validator');
 
 
@@ -17,6 +18,12 @@ const validateRegister = [
     // Email: verify format and normalize (e.g., lowercase)
     body('email')
       .isEmail().withMessage('Please enter a valid email address.')
+      .custom(async value => {
+        const user = findMemberByEmail(value)
+        if (value === user.email) {
+          throw new Error('We have two users having the same email');
+        }
+      })
       .normalizeEmail(),
     body('password')
       .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long.')
@@ -42,14 +49,18 @@ async function registerControllerPost(req, res, next){
       return res.status(400).json({ errors: errors.array() })
     }
 
-
+    try{
     const {firstname, lastname, email, password, isMember} = req.body
-    
     const member_status = isMember || false
-    
-    registerUser(firstname, lastname, email, password, member_status )
+    const hashedPassword = bcrypt.hash(password, 10)
+    registerUser(firstname, lastname, email, hashedPassword, member_status )
     
     res.redirect('/')
+    }
+    catch(error){
+      console.error(error)
+      next(error)
+    }
 }
 
 

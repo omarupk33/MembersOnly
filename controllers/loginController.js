@@ -1,11 +1,11 @@
-const {findUserByEmail} = require('../db/queries');
+const {findMemberByEmail} = require('../db/queries');
 const { body, validationResult } = require('express-validator');
 
 
 
 const validateLogin = [
     // Email: verify format and normalize (e.g., lowercase)
-    body('email').trim
+    body('email').trim()
       .isEmail().withMessage('Please enter a valid email address.')
       .normalizeEmail(),
 
@@ -23,18 +23,27 @@ async function loginControllerGet(req, res, next){
 
 async function loginControllerPost(req, res, next){
 
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+      return res.status(400).json({ errors: errors.array() })
+    }
 
+  try{
 
-  const {password, email} = req.body
+    const {password, email} = req.body
+    const member = await findMemberByEmail(email)
 
-  const member = await findUserByEmail(email)
-
-  if(member.email === email && 
-     member.password === Number(password)){
-        res.send('Login Succeed')
-  }
+    if(member.email === email && bcrypt.compare(password, member.password)){
+          res.send('Login Succeed')
+    }
 
   else{ res.send('Login Failed')}
+
+    }
+   catch(error){
+    console.error(error)
+    next(error)
+    }
 
 }
 

@@ -1,12 +1,9 @@
 require('dotenv').config();
-const db = require('./db/queries')
 const express = require('express');
-// const session = require('express-session');
-// const pgSession = require('connect-pg-simple')(session);
-// const passport = require('passport');
-// const bcrypt = require('bcrypt');
-// const { body, validationResult } = require('express-validator');
-// const initializePassport = require('./passport-config');
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const passport = require('passport');
+const initializePassport = require('./passport-config');
 
 const loginRoute = require('./routes/loginRoute')
 const registerRoute = require('./routes/registerRoute')
@@ -26,7 +23,12 @@ app.get('/', async(req, res, next)=>{
       res.render('index', {posts: posts});
 })
 
-app.use('/login',loginRoute)
+app.use('/login',  
+    passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureMessage: true,
+  }),loginRoute)
 app.use('/register', registerRoute)
 app.use('/post', postRoute)
 

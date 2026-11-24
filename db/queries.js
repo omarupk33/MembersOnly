@@ -12,7 +12,7 @@ async function registerUser(firstname, lastname, email, password, membership_sta
 }
 
 
-const findUserByEmail = async(email)=>{
+const findMemberByEmail = async(email)=>{
     const getUser = await pool.query(`SELECT * FROM members
         WHERE email = $1 LIMIT 1;`, [email])
 
@@ -37,4 +37,4 @@ async function allPosts() {
 }
 
 
-module.exports = {registerUser, findUserByEmail, addPost, allPosts}
+module.exports = {registerUser, findMemberByEmail, addPost, allPosts}

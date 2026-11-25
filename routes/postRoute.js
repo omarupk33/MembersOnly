@@ -1,7 +1,7 @@
 const {Router} = require('express')
 const router = Router()
 const {addPost} = require('../db/queries');
-const { body, validationResult } = require('express-validator');
+
 
 
 

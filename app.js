@@ -3,15 +3,30 @@ const express = require('express');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const passport = require('passport');
-const initializePassport = require('./passport-config');
-
 const loginRoute = require('./routes/loginRoute')
 const registerRoute = require('./routes/registerRoute')
 const postRoute = require('./routes/postRoute')
+require('./config/passport');
 
+// Set up sessions
+
+app.use(session({
+    store: new pgSession({
+        conString:process.env.DATABASEURL
+    }),
+    secret:process.env.COOKIE_SECRET,
+    resave:false,
+    saveUninitialized: true,
+    cookie: {maxAge: 30 * 24 * 60 * 60 * 1000},
+    saveUninitialized: true,
+}))
+
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 const app = express();
-// initializePassport(passport);
+
 
 // View engine and middleware
 app.set('view engine', 'ejs');

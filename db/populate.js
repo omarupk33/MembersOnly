@@ -10,7 +10,7 @@ password TEXT, membership_status BOOLEAN)`
 async function main(){
     console.log('Seeding...')
     const client = new Client({
-    connectionString:`postgresql://omar:1423O4756m@localhost:5432/post_app`
+    connectionString: process.env.DATABASEURL
 })
 
 await client.connect()

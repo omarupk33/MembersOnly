@@ -27,7 +27,7 @@ const validateRegister = [
       .normalizeEmail(),
     body('password')
       .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long.')
-      .custom(async value => {
+      .custom(async (value, {req}) => {
         if (value !== req.body.confirmpw) {
           throw new Error('The two passwords are not matching');
         }
@@ -52,7 +52,7 @@ async function registerControllerPost(req, res, next){
     try{
     const {firstname, lastname, email, password, isMember} = req.body
     const member_status = isMember || false
-    const hashedPassword = bcrypt.hash(password, 10)
+    const hashedPassword =  await bcrypt.hash(password, 10)
     registerUser(firstname, lastname, email, hashedPassword, member_status )
     
     res.redirect('/')

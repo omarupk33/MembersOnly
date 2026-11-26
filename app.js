@@ -3,17 +3,21 @@ const express = require('express');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const passport = require('passport');
+require('./config/passport');
+const db = require('./db/queries')
 const loginRoute = require('./routes/loginRoute')
 const registerRoute = require('./routes/registerRoute')
 const postRoute = require('./routes/postRoute')
-require('./config/passport');
 
-// Set up sessions
+const app = express();
+
 
 app.use(session({
     store: new pgSession({
-        conString:process.env.DATABASEURL
+        conString: process.env.DATABASEURL,
+        createTableIfMissing: true
     }),
+
     secret:process.env.COOKIE_SECRET,
     resave:false,
     saveUninitialized: true,
@@ -25,7 +29,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-const app = express();
 
 
 // View engine and middleware
@@ -38,12 +41,7 @@ app.get('/', async(req, res, next)=>{
       res.render('index', {posts: posts});
 })
 
-app.use('/login',  
-    passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-    failureMessage: true,
-  }),loginRoute)
+app.use('/login', loginRoute)
 app.use('/register', registerRoute)
 app.use('/post', postRoute)
 

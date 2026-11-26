@@ -1,5 +1,6 @@
 const {findMemberByEmail} = require('../db/queries');
 const { body, validationResult } = require('express-validator');
+const bcrypt = require("bcryptjs");
 
 
 
@@ -32,13 +33,14 @@ async function loginControllerPost(req, res, next){
 
     const {password, email} = req.body
     const member = await findMemberByEmail(email)
+    const isMatch = await bcrypt.compare(password, member.password);
 
-    if(member.email === email && bcrypt.compare(password, member.password)){
-          res.send('Login Succeed')
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-  else{ res.send('Login Failed')}
-
+          res.send(`Login Succeed ${req.user}`)
+    
     }
    catch(error){
     console.error(error)

@@ -3,14 +3,14 @@ const express = require('express');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const passport = require('passport');
-require('./config/passport');
+const initializePassport = require('./config/passport');
 const db = require('./db/queries')
 const loginRoute = require('./routes/loginRoute')
 const registerRoute = require('./routes/registerRoute')
 const postRoute = require('./routes/postRoute')
 
 const app = express();
-
+initializePassport(passport)
 
 app.use(session({
     store: new pgSession({
@@ -22,7 +22,6 @@ app.use(session({
     resave:false,
     saveUninitialized: true,
     cookie: {maxAge: 30 * 24 * 60 * 60 * 1000},
-    saveUninitialized: true,
 }))
 
 

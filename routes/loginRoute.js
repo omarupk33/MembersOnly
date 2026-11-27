@@ -2,18 +2,18 @@ const {Router} = require('express')
 const router = Router()
 require('../config/passport');
 const passport = require('passport');
-const {loginControllerGet,loginControllerPost, validateLogin} = require('../controllers/loginController')
+const {loginControllerGet, validateErrors, validateLogin} = require('../controllers/loginController')
 
-router.get('/', validateLogin,loginControllerGet)
+router.get('/', loginControllerGet)
 
 
 
-router.post('/',  passport.authenticate("local", {
+router.post('/', validateLogin, validateErrors, passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/login",
     failureMessage: true,
-  }), loginControllerPost)
+  }))
 
 
-
+// , loginControllerPost
 module.exports = router

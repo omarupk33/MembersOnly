@@ -1,51 +1,54 @@
 const bcrypt = require('bcryptjs')
-const {findMemberByEmail} = require('../db/queries');
-const passport = require("passport");
-const LocalStrategy = require('passport-local').Strategy;
+const {findMemberByEmail} = require('../db/queries')
+const LocalStrategy = require('passport-local').Strategy
 
 
-
+const initialize = (passport)=>{
 
 const customFields = {
-  email:'email', password:'password'
+  usernameField:'email', passwordField:'password'
 }
 
-
-const strategy = new LocalStrategy(customFields, async (email, password, done) => {
-  console.log("strategy working")
+const authenticateUser = async(email, password, done) => {
+      console.log("Strategy working")
       try {
+
       const member = await findMemberByEmail(email)
 
+      const isMatch = await bcrypt.compare(password, member.password);
         if (!member) {
           console.log("Incorrect email")
-          return done(null, false, { message: "Incorrect email" });
+          return done(null, false, { message: "Incorrect email" })
         }
-        if ( bcrypt.compare(password, member.password)) {
+        if (!isMatch) {
           console.log("Incorrect password")
-          return done(null, false, { message: "Incorrect password" });
+          return done(null, false, { message: "Incorrect password" })
         }
-        return done(null, member);
+        return done(null, member)
       } catch(err) {
-        return done(err);
+        return done(err)
       }
-  })
+  }
+  
 
-
-passport.use(strategy);
+  passport.use(new LocalStrategy(customFields, authenticateUser))
 
 
 passport.serializeUser((member, done) => {
-  done(null, member.email);
+  done(null, member.email)
 });
 
 passport.deserializeUser(async (email, done) => {
   try {
-    const { rows } = await findMemberByEmail(email)
-    const member = rows[0];
 
-    done(null, member);
+    const member = await findMemberByEmail(email)
+  
+
+    done(null, member)
   } catch(err) {
-    done(err);
+    done(err)
   }
-});
+})
+}
 
+module.exports = initialize
